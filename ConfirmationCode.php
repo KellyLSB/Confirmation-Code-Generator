@@ -110,7 +110,7 @@ class ConfirmationCode {
 		echo "<hr />";
 		for($x=0;$x<$len;$x++)
 			$str .= $this->conv(substr($crypt, $x, 1), $x%2 ? $rand[0] : $rand[1]);
-		return substr(chunk_split($this->inject_salt($str, $rand), 5, '-'), 0, -1);
+		return substr(chunk_split($this->inject_salt($str, $rand), 4, '-'), 0, -1);
 	}
 	
 	public function decode($crypt) {
