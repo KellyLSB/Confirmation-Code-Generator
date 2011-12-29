@@ -96,30 +96,55 @@ class ConfirmationCode {
 		2 => '10',
 		3 => '20',
 		4 => '02',
+		5 => '11',
+		6 => '21',
+		7 => '12'
 	);
 	
 	private $salt = 'AQL91WFO3UZ4XPCMR78SDEY6KH5B2GVTNIJ0';
 	
 	public function encode($id, $len = 8) {
-		if(!is_numeric($id)) throw new Exception('Must Be Number');
-		if($len < 4) throw new Exception('Minimum Length is `4`');
+		if(!is_numeric($id)) throw new Exception('`'.__CLASS__.'` Provided ID must be a number');
+		if($len < 4) throw new Exception('`'.__CLASS__.'` Minimum length of ID number is `4`');
 		
 		$str = '';
 		$crypt = str_pad($id, $len, '0', STR_PAD_LEFT);;
-		$rand = array(rand(0,35),rand(0,35));
-		echo "<hr />";
-		for($x=0;$x<$len;$x++)
-			$str .= $this->conv(substr($crypt, $x, 1), $x%2 ? $rand[0] : $rand[1]);
+		$rand = array(rand(0,35),rand(0,35),rand(0,35));
+		$s = 0;
+		for($x=0;$x<$len;$x++) {
+			switch($s) {
+				case 2:
+				$s = 0;
+				break;
+				default:
+				$s++;
+				break;
+			}
+			$str .= $this->conv(substr($crypt, $x, 1), $rand[$s]);
+		}
 		return substr(chunk_split($this->inject_salt($str, $rand), 4, '-'), 0, -1);
 	}
 	
 	public function decode($crypt) {
 		$crypt = preg_replace('/[^A-Za-z0-9]+/', '', strtoupper($crypt));
+		if(strlen($crypt) < 8) throw new Exception('`'.__CLASS__.'` Minimum length of generated code is `8`');
 		
 		$rand = $this->retrieve_salt($crypt);
 		$len = strlen($crypt);
-		for($x=0;$x<$len;$x++)
-			$str .= $this->reconv(substr($crypt, $x, 1), $x%2 ? $rand[0] : $rand[1]);
+		$s = 0;
+		for($x=0;$x<$len;$x++) {
+			switch($s) {
+				case 2:
+				$s = 0;
+				break;
+				default:
+				$s++;
+				break;
+			}
+			$v = $this->reconv(substr($crypt, $x, 1), $rand[$s]);
+			if($v === false) throw new Exception('`'.__CLASS__.'` Code was altered or generated incorrently. `'.substr($crypt, $x, 1).'` could not be decrypted.');
+			else $str .= $v;
+		}
 		return $str;
 	}
 	
@@ -133,7 +158,7 @@ class ConfirmationCode {
 	
 	private function inject_salt($crypt, $salt) {
 		$return = '';
-		$fnum = rand(0,4);
+		$fnum = strlen($crypt) < 6 ? rand(0,5) : rand(0,7);
 		$crypt = str_split($crypt);
 		$saltf = str_split($this->salt_formats[$fnum]);
 		$second = (count($crypt) - 1) - $saltf[1];
@@ -145,14 +170,17 @@ class ConfirmationCode {
 				
 			$return .= $letter;
 		}
-		return $return.substr($this->salt, $fnum, 2);
+		return $return.substr($this->salt, $fnum, 1).substr($this->salt, $salt[2], 1);;
 	}
 	
 	private function retrieve_salt(&$crypt) {
-		$return = array();
 		$crypt2 = '';
-		$fnum = substr(substr($crypt, -2), 0, 1);
+		$return = array();
+		$salt2 = strpos($this->salt, substr($crypt, -1));
+		$fnum = substr($crypt, -2, 1);
 		$fnum = strpos($this->salt, $fnum);
+		if(($fnum > 5 && strlen($crypt) < 10) || $fnum > 7)
+			throw new Exception('`'.__CLASS__.'` Code was altered or generated incorrently. Salt format is off.');
 		$crypt = str_split(substr($crypt, 0, -2));
 		$saltf = str_split($this->salt_formats[$fnum]);
 		$second = (count($crypt) - 2) - $saltf[1];
@@ -164,6 +192,8 @@ class ConfirmationCode {
 			$crypt2 .= $letter;
 		}
 		$crypt = $crypt2;
+		$return[] = $salt2;
 		return $return;
 	}
+	
 }
