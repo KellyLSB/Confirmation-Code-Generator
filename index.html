@@ -1,0 +1,85 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Confirmation Code Generator by KellyLSB</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Confirmation Code Generator</h1>
+        <p>Encrypts and decrypts ID numbers to and from an Alpha Numeric code</p>
+        <p class="view"><a href="https://github.com/KellyLSB/Confirmation-Code-Generator">View the Project on GitHub <small>KellyLSB/Confirmation-Code-Generator</small></a></p>
+        <ul>
+          <li><a href="https://github.com/KellyLSB/Confirmation-Code-Generator/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/KellyLSB/Confirmation-Code-Generator/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/KellyLSB/Confirmation-Code-Generator">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>Confirmation Code Generator</h1>
+
+<p>Inspired by a similar class written by David Boskovic (<a href="http://github.com/dboskovic">http://github.com/dboskovic</a>)</p>
+
+<h1>Information</h1>
+
+<p>This generator encrypts and decrypts ID numbers to and from an Alpha Numeric (A-Z,0-9)
+Tracking number like code. It then stores a Salt, and a Salt Format ID within the code.
+When the Code is decrypted it looks for the Salt Format ID which tells the class where
+it can find the Salt within the Code. The Salt is then extracted from the Code and sent
+to the decrypter where it is used to determine which decryption key should be used.</p>
+
+<h1>USAGE</h1>
+
+<pre><code>&lt;?php
+$ConfCode = new ConfirmationCode;
+
+// $len is the length of the id (The code itself will tack on 4 characters.)
+// If $len = 8 then the code will be 12 digits long. If $len = 4 then the code
+// will be 8 digits long.
+$code = $ConfCode-&gt;auto('id' [, $len = 8]);
+
+// $code is the generated code.
+$id = $ConfCode-&gt;auto($code);
+
+// $id is the decrypted number.
+
+?&gt;
+</code></pre>
+
+<h1>License</h1>
+
+<p>Confirmation Code Generator by Kelly Lauren Summer Becker is licensed under a Creative Commons Attribution-ShareAlike 3.0 Unported License.
+Permissions beyond the scope of this license may be available at <a href="http://kellybecker.me">http://kellybecker.me</a>.</p>
+
+<p><a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" alt="BY-SA" title="BY-SA"></a></p>
+      </section>
+    </div>
+    <footer>
+      <p>Project maintained by <a href="https://github.com/KellyLSB">KellyLSB</a></p>
+      <p>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></p>
+    </footer>
+    <!--[if !IE]><script>fixScale(document);</script><!--<![endif]-->
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-19766005-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+  </body>
+</html>
